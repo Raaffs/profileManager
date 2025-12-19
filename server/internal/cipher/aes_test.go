@@ -1,17 +1,33 @@
 package cipher
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"testing"
 )
 
+
+
+func GenerateAES256KeyBase64() (string, error) {
+	key := make([]byte, 32)
+	if _, err := rand.Read(key); err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(key), nil
+}
+
 func TestEncryptDecrypt_SameKey(t *testing.T) {
-	key := "0123456789abcdef0123456789abcdef" 
+	key,err := GenerateAES256KeyBase64()
+	if err != nil {
+		t.Fatalf("GenerateAES256KeyBase64() error = %v", err)
+	}
+	fmt.Println(key)
 	tests := []struct {
 		plaintext string
 	}{
 		{"hello world"},
-		{"secret data"},
+		{"secretdata"},
 	}
 
 	for _, tt := range tests {
@@ -35,9 +51,14 @@ func TestEncryptDecrypt_SameKey(t *testing.T) {
 }
 
 func TestDecrypt_DifferentKey_Error(t *testing.T) {
-	key := "0123456789abcdef0123456789abcdef"
-	otherKey := "abcdef0123456789abcdef0123456789"
-
+	key,err := GenerateAES256KeyBase64()
+	if err != nil {
+		t.Fatalf("GenerateAES256KeyBase64() error = %v", err)
+	}
+	otherKey,err:=GenerateAES256KeyBase64()
+	if err != nil {
+		t.Fatalf("GenerateAES256KeyBase64() error = %v", err)
+	}
 	plaintext := "sensitive info"
 
 	ciphertext, err := Encrypt(key, plaintext)
@@ -51,7 +72,7 @@ func TestDecrypt_DifferentKey_Error(t *testing.T) {
 }
 
 func TestEncrypt_InvalidKey_Error(t *testing.T) {
-	invalidKey := "short-key" 
+	invalidKey := "fefefwefwf" //not 32 bytes base64 encoded
 	plaintext := "secret data"
 
 	if _, err := Encrypt(invalidKey, plaintext); err == nil {

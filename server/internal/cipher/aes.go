@@ -8,28 +8,41 @@ import (
 	"io"
 )
 
-func Encrypt(secretKey string, plaintext string) (string, error) {
-	block, err := aes.NewCipher([]byte(secretKey))
+func Encrypt(secretKeyBase64 string, plaintext string) (string, error) {
+	key, err := base64.StdEncoding.DecodeString(secretKeyBase64)
 	if err != nil {
 		return "", err
 	}
+
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return "", err
+	}
+
 	gcm, err := cipher.NewGCM(block)
 	if err != nil {
 		return "", err
 	}
+
 	nonce := make([]byte, gcm.NonceSize())
 	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
 		return "", err
 	}
+
 	ciphertext := gcm.Seal(nonce, nonce, []byte(plaintext), nil)
 	return base64.StdEncoding.EncodeToString(ciphertext), nil
 }
-
-func Decrypt(secretKey string, ciphertext string) (string, error) {
-	block, err := aes.NewCipher([]byte(secretKey))
+func Decrypt(secretKeyBase64 string, ciphertext string) (string, error) {
+	key, err := base64.StdEncoding.DecodeString(secretKeyBase64)
 	if err != nil {
 		return "", err
 	}
+
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return "", err
+	}
+
 	gcm, err := cipher.NewGCM(block)
 	if err != nil {
 		return "", err
@@ -50,5 +63,6 @@ func Decrypt(secretKey string, ciphertext string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return string(plaintext), nil
 }
