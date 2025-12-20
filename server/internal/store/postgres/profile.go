@@ -16,8 +16,8 @@ func (r *PostgresProfileRepo) GetProfileByUserID(ctx context.Context, userID int
 
 func (r *PostgresProfileRepo) Create(ctx context.Context, profile models.Profile) error {
 	query:=`
-		INSERT INTO profiles (user_id,full_name,date_of_birth,phone_number,address,aadhaar_number)
-		VALUES ($1,$2,$3,$4,$5,$6)
+		INSERT INTO profiles (user_id,full_name,date_of_birth,phone_number,address,aadhaar_number,unique_id)
+		VALUES ($1,$2,$3,$4,$5,$6,$7)
 	`
 	_,err:=r.Pool.Exec(
 		ctx,
@@ -28,6 +28,7 @@ func (r *PostgresProfileRepo) Create(ctx context.Context, profile models.Profile
 		profile.PhoneNumber,
 		profile.Address,
 		profile.AadhaarNumber,
+		profile.UniqueID,
 	);if err!=nil{
 		return err
 	}

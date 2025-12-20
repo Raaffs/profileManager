@@ -17,7 +17,7 @@ type Validator struct {
 }
 
 // New is a helper which creates a new Validator instance with an empty errors map.
-func New() *Validator {
+func NewValidator() *Validator {
 	return &Validator{Errors: make(map[string]string)}
 }
 

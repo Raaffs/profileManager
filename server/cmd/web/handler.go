@@ -102,7 +102,7 @@ func (app *Application) CreateProfile(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "unauthorized"})
 	}
 
-	validate := new(utils.Validator)
+	validate := utils.NewValidator()
 	validate.Aadhar(p.AadhaarNumber)
 	validate.Date(p.DateOfBirth.Format("2006-01-02"))
 	validate.Phone(p.PhoneNumber)
@@ -113,7 +113,15 @@ func (app *Application) CreateProfile(c echo.Context) error {
 	}
 
 	p.UserID = userID
-	p.AadhaarNumber, err = cipher.Encrypt(p.AadhaarNumber, app.env[env.AES_KEY]);if err!=nil{
+
+	uniqueID,err:=utils.GenerateUniqueID();if err!=nil{
+		app.logger.Errorf("error generating unique id \n%w", err)
+		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
+	}
+	p.UniqueID=uniqueID
+	fmt.Println(uniqueID,"ufdf",p.UniqueID)
+
+	p.AadhaarNumber, err = cipher.Encrypt(app.env[env.AES_KEY],p.AadhaarNumber);if err!=nil{
 		app.logger.Errorf("error encrypting aadhaar number \n%w", err)	
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
@@ -123,8 +131,9 @@ func (app *Application) CreateProfile(c echo.Context) error {
 			return c.JSON(http.StatusBadRequest, map[string]string{"error": "user not found"})
 		}
 		app.logger.Errorf("error creating profile \n%w", err)
-		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrUnauthorized})
+		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
+
 	return nil
 }
 
@@ -145,7 +154,7 @@ func (app *Application) GetProfile(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrUnauthorized})
 	}
 
-	profile.AadhaarNumber, err = cipher.Decrypt(profile.AadhaarNumber, app.env[env.AES_KEY])
+	profile.AadhaarNumber, err = cipher.Decrypt(app.env[env.AES_KEY], profile.AadhaarNumber)
 	if err != nil {
 		app.logger.Errorf("error decrypting aadhaar number \n%w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
