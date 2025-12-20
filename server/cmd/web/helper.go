@@ -8,6 +8,8 @@ import (
 
 	"github.com/Raaffs/profileManager/server/internal/cipher"
 	"github.com/Raaffs/profileManager/server/internal/env"
+	"github.com/Raaffs/profileManager/server/internal/models"
+	"github.com/Raaffs/profileManager/server/internal/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 )
@@ -73,4 +75,13 @@ func DecryptFields(secretKey string, fields ...*string) error {
         *field = decryptedValue
     }
     return nil
+}
+
+func ValidateProfile(p models.Profile) *utils.Validator{
+    validate := utils.NewValidator()
+	validate.Aadhar(p.AadhaarNumber)
+	validate.Date(p.DateOfBirth.Format("2006-01-02"))
+	validate.Phone(p.PhoneNumber)
+	validate.NameLength(p.FullName, 3, 20)
+	return validate
 }

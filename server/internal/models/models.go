@@ -7,6 +7,7 @@ import (
 
 var(
     NotFound = errors.New("record not found")
+    AlreadyExists = errors.New("record already exists")
 )
 
 type User struct {
@@ -25,7 +26,6 @@ type Profile struct {
     FullName      string    `json:"full_name"`
     DateOfBirth   time.Time `json:"date_of_birth"`
     AadhaarNumber string    `json:"aadhaar_number"`
-    UniqueID      string    `json:"unique_id"`    
     PhoneNumber   string    `json:"phone_number"`
     Address       string    `json:"address"`     
     CreatedAt     time.Time `json:"created_at"`

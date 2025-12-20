@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/Raaffs/profileManager/server/internal/cipher"
@@ -13,6 +14,7 @@ import (
 )
 
 func (app *Application) Login(c echo.Context) error {
+	fmt.Println("yoooo")
 	var input struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -80,6 +82,9 @@ func (app *Application) Register(c echo.Context) error {
 	user.PasswordHash=hashedPassword
 
 	if err := app.repo.Users.CreateUser(c.Request().Context(), &user); err != nil {
+		if errors.Is(err, models.AlreadyExists) {
+			return c.JSON(http.StatusConflict, map[string]string{"error": "email or username already exists"})
+		}
 		app.logger.Errorf("error creating user \n%w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrUnauthorized})
 	}
@@ -98,33 +103,26 @@ func (app *Application) CreateProfile(c echo.Context) error {
 		app.logger.Errorf("error getting user from jwt \n%w", err)
 		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "unauthorized"})
 	}
-
-	validate := utils.NewValidator()
-	validate.Aadhar(p.AadhaarNumber)
-	validate.Date(p.DateOfBirth.Format("2006-01-02"))
-	validate.Phone(p.PhoneNumber)
-	validate.NameLength(p.FullName, 3, 20)
-	if !validate.Valid() {
+	if validate := ValidateProfile(p); !validate.Valid(){
 		return c.JSON(http.StatusBadRequest, validate.Errors)
 	}
 
 	p.UserID = userID
 
-	uniqueID,err:=utils.GenerateUniqueID();if err!=nil{
-		app.logger.Errorf("error generating unique id \n%w", err)
-		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
-	}
-	p.UniqueID=uniqueID
-
-	if err := EncryptFields(app.env[env.AES_KEY],&p.AadhaarNumber,&p.UniqueID); err!=nil{
+	if err := EncryptFields(app.env[env.AES_KEY],&p.AadhaarNumber); err!=nil{
 		app.logger.Errorf("error encrypting fields \n%w", err)	
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
 
 	if err := app.repo.Profiles.Create(c.Request().Context(), p); err != nil {
 		if errors.Is(err, models.NotFound) {
-			return c.JSON(http.StatusBadRequest, map[string]string{"error": "user not found"})
+			return c.JSON(http.StatusNotFound, map[string]string{"error": "user not found"})
 		}
+
+		if errors.Is(err, models.AlreadyExists) {
+			return c.JSON(http.StatusConflict, map[string]string{"error": "phone no. already exists"})
+		}
+		
 		app.logger.Errorf("error creating profile \n%w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
@@ -149,7 +147,7 @@ func (app *Application) GetProfile(c echo.Context) error {
 	}
 
 	if err := DecryptFields(app.env[env.AES_KEY], &profile.AadhaarNumber);err != nil {
-		app.logger.Errorf("error decrypting aadhaar number \n%w", err)
+		app.logger.Errorf("error decrypting fields \n%w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
 	return c.JSON(http.StatusOK, profile)
@@ -168,19 +166,26 @@ func (app *Application) UpdateProfile(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid request"})
 	}
 
+	if validate := ValidateProfile(p); !validate.Valid(){
+		return c.JSON(http.StatusBadRequest, validate.Errors)
+	}
+
 	p.UserID = userID
-	p.AadhaarNumber, err = cipher.Encrypt(p.AadhaarNumber, app.env[env.AES_KEY])
+	p.AadhaarNumber, err = cipher.Encrypt(app.env[env.AES_KEY],p.AadhaarNumber)
 	if err != nil {
 		app.logger.Errorf("error encrypting aadhaar number \n%w", err)
-		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrUnauthorized})
+		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
 
 	if err := app.repo.Profiles.Update(c.Request().Context(), p); err != nil {
 		if errors.Is(err, models.NotFound) {
 			return c.JSON(http.StatusBadRequest, map[string]string{"error": "profile not found"})
 		}
+		if errors.Is(err, models.AlreadyExists) {
+			return c.JSON(http.StatusConflict, map[string]string{"error": "phone no. already exists"})
+		}
 		app.logger.Errorf("error updating profile \n%w", err)
-		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrUnauthorized})
+		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
 	return nil
 }

@@ -77,6 +77,8 @@ sketch
 ###environment files###
 .env
 .env.dev
+.env.developement
 .env.production
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,visualstudiocode,go,react
+clientold

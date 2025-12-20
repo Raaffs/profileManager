@@ -27,7 +27,7 @@ type Application struct {
 
 func loadEnv() map[string]string {
 	// It reads the .env file and injects it into the OS environment
-    err := godotenv.Load() 
+    err := godotenv.Load(".env.development") 
     if err != nil {
         log.Fatal("Error loading .env file")
     }
