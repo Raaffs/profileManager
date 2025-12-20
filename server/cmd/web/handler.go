@@ -58,8 +58,7 @@ func (app *Application) Register(c echo.Context) error {
 		app.logger.Errorf("error binding json to type user \n%w", err)
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid request"})
 	}
-
-
+	
 	validate := utils.NewValidator()
 	validate.NameLength(u.Username, 3, 20)
 	validate.Mail(u.Email)
@@ -117,8 +116,8 @@ func (app *Application) CreateProfile(c echo.Context) error {
 	}
 	p.UniqueID=uniqueID
 
-	p.AadhaarNumber, err = cipher.Encrypt(app.env[env.AES_KEY],p.AadhaarNumber);if err!=nil{
-		app.logger.Errorf("error encrypting aadhaar number \n%w", err)	
+	if err := EncryptFields(app.env[env.AES_KEY],&p.AadhaarNumber,&p.UniqueID); err!=nil{
+		app.logger.Errorf("error encrypting fields \n%w", err)	
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
 
@@ -140,7 +139,6 @@ func (app *Application) GetProfile(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, map[string]HttpResponseMsg{"error": ErrUnauthorized})
 	}
 
-
 	profile, err := app.repo.Profiles.GetProfileByUserID(c.Request().Context(), userID)
 	if err != nil {
 		if errors.Is(err, models.NotFound) {
@@ -150,8 +148,7 @@ func (app *Application) GetProfile(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrUnauthorized})
 	}
 
-	profile.AadhaarNumber, err = cipher.Decrypt(app.env[env.AES_KEY], profile.AadhaarNumber)
-	if err != nil {
+	if err := DecryptFields(app.env[env.AES_KEY], &profile.AadhaarNumber);err != nil {
 		app.logger.Errorf("error decrypting aadhaar number \n%w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}

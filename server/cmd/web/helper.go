@@ -2,9 +2,11 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
+	"github.com/Raaffs/profileManager/server/internal/cipher"
 	"github.com/Raaffs/profileManager/server/internal/env"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
@@ -42,4 +44,33 @@ func (app *Application) GetUserJWT(c echo.Context) (int, error) {
     userID := claims.UserID
 	log.Println("user id: ",userID,claims,user)
     return int(userID), nil
+}
+
+func EncryptFields(secretKey string, fields ...*string) error {
+    for i, field := range fields {
+        // Skip empty optional fields to avoid storing encrypted empty strings
+        if field == nil || *field == "" {
+            continue
+        }
+        encryptedValue, err := cipher.Encrypt(secretKey, *field)
+        if err != nil {
+            return fmt.Errorf("encryption failed for %s: %w", i, err)
+        }
+        *field = encryptedValue
+    }
+    return nil
+}
+
+func DecryptFields(secretKey string, fields ...*string) error {
+    for _, field := range fields {
+        if field == nil || *field == "" {
+            continue
+        }
+        decryptedValue, err := cipher.Decrypt(secretKey, *field)
+        if err != nil {
+            return err
+        }
+        *field = decryptedValue
+    }
+    return nil
 }
