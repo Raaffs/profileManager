@@ -14,7 +14,7 @@ CREATE TABLE profiles (
     user_id INTEGER NOT NULL,
     full_name VARCHAR(255) NOT NULL,
     date_of_birth DATE NOT NULL,
-    aadhaar_number VARCHAR(20) NOT NULL UNIQUE,
+    aadhaar_number TEXT NOT NULL UNIQUE,
     phone_number VARCHAR(20) NOT NULL UNIQUE,
     address TEXT,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,

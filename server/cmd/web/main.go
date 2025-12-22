@@ -56,6 +56,7 @@ func loadEnv() map[string]string {
             log.Println("No local .env found, skipping")
         }
     }
+	log.Println("run time env: ",os.Getenv("DOCKER"))
 
     envMap := map[string]string{
         env.API_PORT:    os.Getenv(env.API_PORT),

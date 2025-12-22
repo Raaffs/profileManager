@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"log"
 	"net/http"
 
 	"github.com/Raaffs/profileManager/server/internal/cipher"
@@ -50,7 +49,6 @@ func (app *Application) Login(c echo.Context) error {
 }
 
 func (app *Application) Register(c echo.Context) error {
-	log.Println("hit register")
 	var u struct{
 		Email string `json:"email"`
 		Password string `json:"password"`
@@ -100,6 +98,9 @@ func (app *Application) CreateProfile(c echo.Context) error {
 
 	userID, err := app.GetUserJWT(c)
 	if err != nil {
+		if errors.Is(err, ErrInvalidToken){
+			return c.JSON(http.StatusUnauthorized, map[string]HttpResponseMsg{"error": ErrUnauthorized})
+		}
 		app.logger.Errorf("error getting user from jwt \n%w", err)
 		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "unauthorized"})
 	}

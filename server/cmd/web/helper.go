@@ -20,6 +20,10 @@ var ErrInternalServer=HttpResponseMsg("internal server error")
 var ErrBadRequest=HttpResponseMsg("bad request")
 var ErrUnauthorized=HttpResponseMsg("you're not authorized to perform this action")
 
+var(
+    ErrInvalidToken=errors.New("invalid token claims")
+)
+
 type JwtCustomClaims struct {
 	UserID  int `json:"user_id"`
 	jwt.RegisteredClaims
@@ -37,11 +41,11 @@ func (app *Application) GenerateToken(userID int) (string, error) {
 func (app *Application) GetUserJWT(c echo.Context) (int, error) {
     user, ok := c.Get("user").(*jwt.Token)
     if !ok {
-        return 0, errors.New("invalid token type in context")
+        return 0, ErrInvalidToken
     }
     claims, ok := user.Claims.(*JwtCustomClaims)
     if !ok {
-        return 0, errors.New("invalid token claims")
+        return 0, ErrInvalidToken
     }
     userID := claims.UserID
 	log.Println("user id: ",userID,claims,user)
