@@ -111,7 +111,7 @@ Ensure you have the following installed before proceeding:
     ```
 2. Database Migrations
    ```bash
-     go install -tags 'postgres' [github.com/golang-migrate/migrate/v4/cmd/migrate@latest](https://github.com/golang-migrate/migrate/v4/cmd/migrate@latest)
+     go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
    ```
     ```bash
     migrate -path server/migrations/ -database "your_db_url" up
