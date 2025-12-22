@@ -139,6 +139,104 @@ Ensure you have the following installed before proceeding:
 | `/api/restricted/profile` | `POST` | ✅ Yes | `{"full_name": "...", "date_of_birth": "...", "aadhaar_number": "...", "phone_number": "...", "address": "..."}` | Initializes a new profile record for the authenticated user. |
 | `/api/restricted/profile` | `PUT` | ✅ Yes | `{"full_name": "...", "date_of_birth": "...", "aadhaar_number": "...", "phone_number": "...", "address": "..."}` | Updates existing profile details. Validates via JWT `sub` claim. |
 
+---
+## AI USAGE LOG
+### 1. AES Encryption & Test Scenarios  
+**AI Agent:** ChatGPT 5 Mini (Copilot)  
+**Score:** ⭐⭐⭐⭐⭐ (5 / 5)
+
+- Correctly implemented AES-GCM encryption using base64-decoded keys and secure nonce generation.
+- Assisted in creating comprehensive test cases covering edge scenarios such as empty inputs, invalid keys, repeated encryption, and mismatched keys.
+
+---
+
+### 2. Backend Error Handling  
+**AI Agent:** ChatGPT 5 Mini (Copilot)  
+**Score:** ⭐⭐☆☆☆ (2 / 5)
+
+- Useful for generating generic boilerplate error handling patterns.
+- Struggled with context-aware error mapping for custom domain errors and database-specific failures.
+- Occasionally suggested incorrect HTTP status codes (e.g., using `Unauthorized` instead of `InternalServerError`).
+- Required manual debugging and corrections to align error responses with actual application behavior.
+
+---
+
+### 3. Frontend Error Handling  
+**AI Agent:** Gemini  
+**Score:** ⭐⭐⭐⭐⭐ (5 / 5)
+
+- Performed very well with React-based error handling flows.
+- Correctly handled API error states, user-facing messages, and redirects (e.g., 404 pages).
+- Integrated cleanly with Formik and Yup validation patterns.
+- Required minimal cleanup before production use.
+- Significantly improved development speed and UX consistency.
+
+---
+
+### 4. Regex Generation & Validation  
+**AI Agent:** ChatGPT 5 Mini (Copilot)  
+**Score:** ⭐⭐⭐⭐⭐ (5 / 5)
+
+- Accurately inferred intent from function and variable names.
+- Generated correct and readable regex patterns for phone numbers, email addresses, and other validations.
+
+---
+
+### 5. SQL Query Assistance  
+**AI Agent:** ChatGPT 5 Mini (Copilot)  
+**Score:** ⭐⭐⭐☆☆ (3.5 / 5)
+
+- Generated structurally correct SQL queries.
+- Overlooked Go-specific implementation details, particularly pointer semantics required when scanning query results with `pgx` library, which could've led to empty result sets if left uncorrected.
+- Required manual fixes to ensure correct data retrieval.
+
+---
+
+### 6. Frontend Styling & UI Design  
+**AI Agent:** Gemini  
+**Score:** ⭐⭐⭐⭐⭐ (5 / 5)
+
+- Extremely effective for modern UI layouts and Material-UI theming.
+- Enabled rapid iteration on visual design and component styling.
+- Major productivity boost for frontend polish and consistency.
+
+---
+
+### 7. JWT Setup  
+**AI Agent:** Gemini  
+**Score:** ⭐⭐⭐☆☆ (3.5 / 5)
+
+- Provided a functional JWT setup.
+- Claims structure was somewhat non-standard. Referencing the [official Echo](https://echo.labstack.com/docs/cookbook/jwt) documentation provided a more straightforward implementation. 
+---
+
+### 8. Generic UI Templates & Components  
+**AI Agent:** Gemini  
+**Score:** ⭐⭐⭐⭐⭐ (5 / 5)
+
+- Excellent for generating reusable React components and layout scaffolding.
+- Enabled rapid prototyping with clean, extendable UI components.
+
+---
+
+### 9. General Code Autocompletion  
+**AI Agent:** ChatGPT (Copilot)  
+**Score:** ⭐⭐⭐⭐☆ (4 / 5)
+
+- Very effective for local context autocompletion within functions or files.
+- Occasionally missed broader context involving external libraries or imports.
+
+---
+
+### 10. README & Documentation Assistance  
+**AI Agent:** ChatGPT  
+**Score:** ⭐⭐⭐⭐⭐ (5 / 5)
+
+- Assisted in structuring and refining the project README.
+- Helped clearly document architecture, setup instructions, API contracts, and development decisions.
+- Improved readability of project documentation.
+
+
 [Go]: https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white
 [Go-url]: https://go.dev/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
