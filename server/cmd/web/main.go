@@ -68,8 +68,6 @@ func loadEnv() map[string]string {
     return envMap
 }
 
-
-
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
