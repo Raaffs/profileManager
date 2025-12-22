@@ -130,6 +130,15 @@ Ensure you have the following installed before proceeding:
     npm install
     npm run dev
     ```
+## API Endpoints
+| Endpoint | Method | Auth Required | Request Body (JSON) | Description & Key Logic |
+| :--- | :--- | :---: | :--- | :--- |
+| `/api/login` | `POST` | ❌ No | `{"email": "...", "password": "..."}` | Authenticates user and returns a JWT token. |
+| `/api/register` | `POST` | ❌ No | `{"email": "...", "password": "..."}` | Creates a new user account in the database. |
+| `/api/restricted/profile` | `GET` | ✅ Yes | None | Fetches the profile associated with the authenticated user ID. |
+| `/api/restricted/profile` | `POST` | ✅ Yes | `{"full_name": "...", "date_of_birth": "...", "aadhaar_number": "...", "phone_number": "...", "address": "..."}` | Initializes a new profile record for the authenticated user. |
+| `/api/restricted/profile` | `PUT` | ✅ Yes | `{"full_name": "...", "date_of_birth": "...", "aadhaar_number": "...", "phone_number": "...", "address": "..."}` | Updates existing profile details. Validates via JWT `sub` claim. |
+
 [Go]: https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white
 [Go-url]: https://go.dev/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
