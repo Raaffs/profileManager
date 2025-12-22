@@ -119,7 +119,7 @@ Ensure you have the following installed before proceeding:
 3. Backend Setup
    Install Go modules and start the server.
     ```bash
-    go mod tidy
+    go mod download
     ```
     ```bash
     go run ./server/cmd/web
