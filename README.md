@@ -86,37 +86,43 @@ d. **Theme & Styling**
 
 Follow these instructions to get the project up and running on your local machine.
 
-### 🛠 Prerequisites
+---
+
+### Option 1: Using Docker (Recommended)
+####  Prerequisites
+1. Install **Docker & Docker Compose**: [Get Docker](https://docs.docker.com/get-docker/)
+
+2. Build & run using following command:
+   ```bash
+    docker compose --env-file .env.example up --build
+    ```
+  The project should be live on localhost:3000
+  
+---
+### Option 2: Manual Local Setup
+####  Prerequisites
 
 Ensure you have the following installed before proceeding:
 
 * **Go** (Golang): [Download & Install](https://go.dev/doc/install)
 * **Node.js**: [Download & Install](https://nodejs.org/)
 * **PostgreSQL**: [Download & Install](https://www.postgresql.org/download/)
-* **Docker & Docker Compose**: [Get Docker](https://docs.docker.com/get-docker/)
----
-### Setup Instructions
 
-#### Option 1: Using Docker (Recommended)
-  ```bash
-  docker compose --env-file .env.example up --build
-  ```
----
-#### Option 2: Manual Local Setup
 1. Environment Configuration
-     Create your local environment file and update the database connection string.
+   - Create your local environment file and update the database connection string.
+
     ```bash
     cp .env.example .env
-    # Open .env and edit your DATABASE_URL
+    # Open .env and edit your DB_URL
     ```
-2. Database Migrations
+3. Database Migrations
    ```bash
      go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
    ```
     ```bash
     migrate -path server/migrations/ -database "your_db_url" up
     ```
-3. Backend Setup
+4. Backend Setup
    Install Go modules and start the server.
     ```bash
     go mod download
@@ -124,7 +130,7 @@ Ensure you have the following installed before proceeding:
     ```bash
     go run ./server/cmd/web
     ```
-4. Frontend Setup
+5. Frontend Setup
    ```bash
     cd client
     npm install
