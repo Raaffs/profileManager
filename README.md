@@ -1,6 +1,4 @@
 <a name="readme-top"></a>
-### GitHub Link:
-https://github.com/Raaffs/IdentityService
 
 <br />
 
@@ -11,7 +9,9 @@ https://github.com/Raaffs/IdentityService
   <p align="center">
 </div>
 
-
+## GitHub Link:
+https://github.com/Raaffs/IdentityService
+---
 
 <!-- TABLE OF CONTENTS -->
 
