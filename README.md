@@ -28,7 +28,29 @@ The core focus of this system is the Protection of Personally Identifiable Infor
 * [![psql][psql]][psql-url]
 * [![docker][docker]][docker-url]
 ---------
-## Implementation approach and core logic 
+## Usage
+### 1. Registration
+<img width="1883" height="944" alt="image" src="https://github.com/user-attachments/assets/50744042-109e-4268-97b1-4177d82df7c3" />
+
+---
+### 2. Login
+<img width="1883" height="944" alt="image" src="https://github.com/user-attachments/assets/533d91ba-a054-4872-91e1-c8e17ee0b238" />
+
+---
+### 3. Create Profile
+<img width="1875" height="938" alt="image" src="https://github.com/user-attachments/assets/c21b843d-cfd6-4f2a-831c-b46e27c1348e" />
+
+--- 
+### 4. Get Profile
+<img width="1867" height="936" alt="image" src="https://github.com/user-attachments/assets/ffd993b9-7a7a-410c-aa3c-f3a34f571cf1" />
+
+---
+### 5. Update Profile
+<img width="1869" height="933" alt="image" src="https://github.com/user-attachments/assets/1563c6da-fe2a-4a1b-af78-e53004a540df" />
+
+---
+
+## 6. Implementation approach and core logic 
 
 ### 1.  Backend Implementation
 
