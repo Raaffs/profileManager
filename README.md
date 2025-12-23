@@ -275,3 +275,6 @@ Ensure you have the following installed before proceeding:
 [psql-url]: https://www.postgresql.org/
 [docker]: https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white
 [docker-url]: https://www.docker.com/
+
+---
+Thank you!
