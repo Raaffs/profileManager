@@ -38,8 +38,9 @@ func (v *Validator) NameLength(name string,min,max int) {
 }
 
 func (v *Validator)Aadhar(aadhar string){
+	regex := regexp.MustCompile(`^[2-9]{1}[0-9]{11}$`)
 	v.Check(
-	 	len(strings.TrimSpace(aadhar)) == AADHAR_LENGTH,
+	 	regex.MatchString(aadhar) && len(aadhar) == AADHAR_LENGTH,
 		ErrInvalidPhone.Key,
 		ErrInvalidPhone.Message,
 	)
@@ -49,8 +50,8 @@ func (v *Validator) Phone(phone string)  {
 	re := regexp.MustCompile(`^\+?(\d{1,3})?[-.\s]?\(?\d{1,4}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}$`)
 	v.Check(
 		re.MatchString(phone),
-		ErrInvalidPhone.Key,
-		ErrInvalidPhone.Message,
+		ErrInvalidAadharNumber.Key,
+		ErrInvalidAadharNumber.Message,
 	)
 }
 

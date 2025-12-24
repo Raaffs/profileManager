@@ -50,6 +50,7 @@ func connectWithRetry(ctx context.Context, dbURL string) (*pgxpool.Pool, error) 
 
 	return nil, fmt.Errorf("failed to connect to DB: %w", err)
 }
+
 func loadEnv() map[string]string {
     if os.Getenv("DOCKER") != "true" {
         if err := godotenv.Load(".env"); err != nil {
@@ -77,7 +78,7 @@ func main() {
 	}
 
 	srv := echo.New()
-		app := &Application{
+	app := &Application{
 		env:    loadEnv(),
 		repo:   store.NewPostgresRepo(conn),
 		logger: srv.Logger,

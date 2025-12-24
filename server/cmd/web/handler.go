@@ -180,7 +180,7 @@ func (app *Application) UpdateProfile(c echo.Context) error {
 
 	if err := app.repo.Profiles.Update(c.Request().Context(), p); err != nil {
 		if errors.Is(err, models.NotFound) {
-			return c.JSON(http.StatusBadRequest, map[string]string{"error": "profile not found"})
+			return c.JSON(http.StatusBadRequest, map[string]HttpResponseMsg{"error": ErrNotFound})
 		}
 		if errors.Is(err, models.AlreadyExists) {
 			//the phone number is the only unique field that can cause conflict here
