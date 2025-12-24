@@ -170,6 +170,10 @@ Ensure you have the following installed before proceeding:
 | `/api/restricted/profile` | `PUT` | ✅ Yes | `{"full_name": "...", "date_of_birth": "...", "aadhaar_number": "...", "phone_number": "...", "address": "..."}` | Updates existing profile details. Validates via JWT `sub` claim. |
 
 ---
+### Database Diagram
+<img width="4794" height="2490" alt="erdplus" src="https://github.com/user-attachments/assets/e663df3a-8c59-41cf-ad95-502cdb2ed475" />
+
+---
 ## AI USAGE LOG
 ### 1. AES Encryption & Test Scenarios  
 **AI Agent:** ChatGPT 5 Mini (Copilot)  
