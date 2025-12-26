@@ -10,8 +10,14 @@ type HealthStatus string
 
 const(
 	StatusHealthy   HealthStatus = "healthy"
+
+	//Indicates Some services are unavailable but core functionality is
+   	//working
 	StatusDegraded HealthStatus = "degraded"
+
+	//Indicates core functionality (ciphers and jwt tokens) is not working as intended
 	StatusCritical HealthStatus = "critical"
+	
 	StatusDown HealthStatus = "down"
 )
 

@@ -28,18 +28,21 @@ func (app *Application) Login(c echo.Context) error {
 			return c.JSON(http.StatusNotFound, map[string]HttpResponseMsg{"error": ErrNotFound})
 		}
 		app.logger.Errorf("error fetching user by email \n%w", err)
+		app.health.SetStatus(StatusDegraded)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.Password)); err != nil {
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 			return c.JSON(http.StatusUnauthorized, map[string]HttpResponseMsg{"error": "invalid username or password"})
 		}
+		app.health.SetStatus(StatusDegraded)
 		app.logger.Error("error comparing password hash \n%w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
 
 	token, err := app.GenerateToken(user.ID)
 	if err != nil {
+		app.health.SetStatus(StatusCritical)
 		app.logger.Errorf("error generating token \n%w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
@@ -69,8 +72,9 @@ func (app *Application) Register(c echo.Context) error {
 
 	hashedPassword, err := utils.HashPassword(u.Password)
 	if err != nil {
+		app.health.SetStatus(StatusDegraded)
 		app.logger.Errorf("error hashing password \n%w", err)
-		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrUnauthorized})
+		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
 
 	var user models.User
@@ -83,6 +87,7 @@ func (app *Application) Register(c echo.Context) error {
 		if errors.Is(err, models.AlreadyExists) {
 			return c.JSON(http.StatusConflict, map[string]string{"error": "email or username already exists"})
 		}
+		app.health.SetStatus(StatusDegraded)
 		app.logger.Errorf("error creating user \n%w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
@@ -101,6 +106,7 @@ func (app *Application) CreateProfile(c echo.Context) error {
 		if errors.Is(err, ErrInvalidToken){
 			return c.JSON(http.StatusUnauthorized, map[string]HttpResponseMsg{"error": ErrUnauthorized})
 		}
+		app.health.SetStatus(StatusCritical)
 		app.logger.Errorf("error getting user from jwt \n%w", err)
 		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "unauthorized"})
 	}
@@ -111,7 +117,8 @@ func (app *Application) CreateProfile(c echo.Context) error {
 	p.UserID = userID
 
 	if err := EncryptFields(app.env[env.AES_KEY],&p.AadhaarNumber); err!=nil{
-		app.logger.Errorf("error encrypting fields \n%w", err)	
+		app.health.SetStatus(StatusCritical)
+		app.logger.Errorf("CRITICAL ERROR : cipher failure \n%w", err)	
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
 
@@ -124,6 +131,7 @@ func (app *Application) CreateProfile(c echo.Context) error {
 			return c.JSON(http.StatusConflict, map[string]string{"error": "phone no. already exists"})
 		}
 		
+		app.health.SetStatus(StatusDegraded)
 		app.logger.Errorf("error creating profile \n%w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
@@ -149,7 +157,7 @@ func (app *Application) GetProfile(c echo.Context) error {
 
 	if err := DecryptFields(app.env[env.AES_KEY], &profile.AadhaarNumber);err != nil {
 		app.logger.Errorf("CRITICAL ERROR: cipher failure: \n%w", err)
-		// app.healthCheck().SetStatus(false)
+		app.health.SetStatus(StatusCritical)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
 	return c.JSON(http.StatusOK, profile)
@@ -175,7 +183,8 @@ func (app *Application) UpdateProfile(c echo.Context) error {
 	p.UserID = userID
 	p.AadhaarNumber, err = cipher.Encrypt(app.env[env.AES_KEY],p.AadhaarNumber)
 	if err != nil {
-		app.logger.Errorf("error encrypting aadhaar number \n%w", err)
+		app.health.SetStatus(StatusCritical)
+		app.logger.Errorf("CRITICAL ERROR: cipher failure \n%w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
 
@@ -188,6 +197,7 @@ func (app *Application) UpdateProfile(c echo.Context) error {
 			//that's why we return this specific message
 			return c.JSON(http.StatusConflict, map[string]string{"error": "phone no. already exists"})
 		}
+		app.health.SetStatus(StatusDegraded)
 		app.logger.Errorf("error updating profile \n%w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
