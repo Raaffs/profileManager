@@ -168,6 +168,7 @@ Ensure you have the following installed before proceeding:
 | `/api/restricted/profile` | `GET` | ✅ Yes | None | Fetches the profile associated with the authenticated user ID. |
 | `/api/restricted/profile` | `POST` | ✅ Yes | `{"full_name": "...", "date_of_birth": "...", "aadhaar_number": "...", "phone_number": "...", "address": "..."}` | Initializes a new profile record for the authenticated user. |
 | `/api/restricted/profile` | `PUT` | ✅ Yes | `{"full_name": "...", "date_of_birth": "...", "aadhaar_number": "...", "phone_number": "...", "address": "..."}` | Updates existing profile details. Validates via JWT `sub` claim. |
+| `/api/health` | `GET` | ❌ No | None | Returns API health status as JSON. Possible values: `"healthy"`, `"degraded"`, `"critical"`, `"down"`. |
 
 ---
 ### Database Diagram
