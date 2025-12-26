@@ -27,8 +27,8 @@ func (app *Application) Login(c echo.Context) error {
 		if errors.Is(err, models.NotFound) {
 			return c.JSON(http.StatusNotFound, map[string]HttpResponseMsg{"error": ErrNotFound})
 		}
-		app.logger.Errorf("error fetching user by email \n%w", err)
 		app.health.SetStatus(StatusDegraded)
+		app.logger.Errorf("error fetching user by email \n%w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.Password)); err != nil {
@@ -100,7 +100,6 @@ func (app *Application) CreateProfile(c echo.Context) error {
 		app.logger.Errorf("error binding json to type profile \n%w", err)
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid request"})
 	}
-
 	userID, err := app.GetUserJWT(c)
 	if err != nil {
 		if errors.Is(err, ErrInvalidToken){

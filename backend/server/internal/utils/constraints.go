@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"regexp"
 	"strings"
 	"time"
@@ -38,9 +39,9 @@ func (v *Validator) NameLength(name string,min,max int) {
 }
 
 func (v *Validator)Aadhar(aadhar string){
-	regex := regexp.MustCompile(`^[2-9]{1}[0-9]{11}$`)
+	log.Println(ValidateAadhaar(aadhar))
 	v.Check(
-	 	regex.MatchString(aadhar) && len(aadhar) == AADHAR_LENGTH,
+		ValidateAadhaar(aadhar),
 		ErrInvalidAadharNumber.Key,
 		ErrInvalidAadharNumber.Message,
 	)

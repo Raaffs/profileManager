@@ -52,7 +52,7 @@ function Profile() {
       address: "",
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { setErrors }) => {
       try {
         setServerMsg(null);
         const payload = {
@@ -70,7 +70,18 @@ function Profile() {
         }
         setIsEditMode(false);
       } catch (err: any) {
-        setServerMsg({ type: "error", text: err.response?.data?.error || "Failed to save profile" });
+        const backendErrors = err.response?.data;
+        
+        if (backendErrors && typeof backendErrors === 'object' && !backendErrors.error) {
+          // 1. Map errors to individual fields (TextField red highlight)
+          setErrors(backendErrors);
+          
+          // 2. Extract specific values from the map to show in the Alert box
+          const errorList = Object.values(backendErrors).join(", ");
+          setServerMsg({ type: "error", text: errorList });
+        } else {
+          setServerMsg({ type: "error", text: err.response?.data?.error || "Failed to save profile" });
+        }
       }
     },
   });
@@ -123,11 +134,8 @@ function Profile() {
           maxWidth: "1200px",
           margin: "0 auto",
           p: { xs: 4, md: 8 },
-          // borderRadius: "40px",
-          // border: "1px solid #f0f0f0",
         }}
       >
-        {/* Header Section */}
         <Box sx={{ mb: 8, display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <Stack direction="row" spacing={3} alignItems="center">
             <Avatar sx={{ bgcolor: "#FF6F61", width: 50, height: 50 }}>
@@ -161,10 +169,9 @@ function Profile() {
           </Alert>
         )}
 
-        {/* Form Body - Grid Spread */}
         <Box component="form" onSubmit={formik.handleSubmit}>
           <Grid container spacing={6}>
-            <Grid  size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 label="Full Name"
@@ -177,7 +184,7 @@ function Profile() {
               />
             </Grid>
 
-            <Grid  size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 label="Date of Birth"
@@ -192,7 +199,7 @@ function Profile() {
               />
             </Grid>
 
-            <Grid  size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 label="Aadhaar Number"
@@ -205,7 +212,7 @@ function Profile() {
               />
             </Grid>
 
-            <Grid  size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 label="Phone Number"
@@ -218,7 +225,7 @@ function Profile() {
               />
             </Grid>
 
-            <Grid  size={{xs:12}}>
+            <Grid size={{xs:12}}>
               <TextField
                 fullWidth
                 label="Residential Address"
@@ -234,7 +241,6 @@ function Profile() {
             </Grid>
           </Grid>
 
-          {/* Action Buttons */}
           {isEditMode && (
             <Box sx={{ mt: 10, display: "flex", justifyContent: "flex-end", gap: 3 }}>
               {hasExistingProfile && (

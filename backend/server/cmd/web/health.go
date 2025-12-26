@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"sync"
 
 	"github.com/labstack/echo/v4"
@@ -17,7 +18,7 @@ const(
 
 	//Indicates core functionality (ciphers and jwt tokens) is not working as intended
 	StatusCritical HealthStatus = "critical"
-	
+
 	StatusDown HealthStatus = "down"
 )
 
@@ -41,14 +42,13 @@ func (h *HealthChecker)GetStatus()HealthStatus{
 func (h *HealthChecker) Handler(c echo.Context) error {
 	status := h.GetStatus()
 	var code int
-
 	switch status {
 	case StatusHealthy, StatusDegraded:
-		code = 200
+		code = http.StatusOK
 	case StatusCritical, StatusDown:
-		code = 503
+		code = http.StatusServiceUnavailable
 	default:
-		code = 500
+		code = http.StatusInternalServerError
 		status = "unknown"
 	}
 	return c.JSON(code, map[string]string{
