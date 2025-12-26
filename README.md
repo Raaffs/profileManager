@@ -161,14 +161,15 @@ Ensure you have the following installed before proceeding:
     npm run dev
     ```
 ## API Endpoints
-| Endpoint | Method | Auth Required | Request Body (JSON) | Description & Key Logic |
-| :--- | :--- | :---: | :--- | :--- |
-| `/api/login` | `POST` | ❌ No | `{"email": "...", "password": "..."}` | Authenticates user and returns a JWT token. |
-| `/api/register` | `POST` | ❌ No | `{"email": "...", "password": "..."}` | Creates a new user account in the database. |
-| `/api/restricted/profile` | `GET` | ✅ Yes | None | Fetches the profile associated with the authenticated user ID. |
-| `/api/restricted/profile` | `POST` | ✅ Yes | `{"full_name": "...", "date_of_birth": "...", "aadhaar_number": "...", "phone_number": "...", "address": "..."}` | Initializes a new profile record for the authenticated user. |
-| `/api/restricted/profile` | `PUT` | ✅ Yes | `{"full_name": "...", "date_of_birth": "...", "aadhaar_number": "...", "phone_number": "...", "address": "..."}` | Updates existing profile details. Validates via JWT `sub` claim. |
-| `/api/health` | `GET` | ❌ No | None | Returns API health status as JSON. Possible values: `"healthy"`, `"degraded"`, `"critical"`, `"down"`. |
+| Endpoint | Method | Auth Required | Request Body (JSON) | Response Body (JSON) | Description & Key Logic |
+| :--- | :--- | :---: | :--- | :--- | :--- |
+| `/api/login` | `POST` | ❌ No | `{"email": "...", "password": "..."}` | `{"token": "..."}` | Authenticates user and returns a JWT token. |
+| `/api/register` | `POST` | ❌ No | `{"email": "...", "password": "..."}` | `{"message": "account created successfully"}` | Creates a new user account in the database. |
+| `/api/restricted/profile` | `GET` | ✅ Yes | None | `{"id": "...", "user_id": "...", "full_name": "...", "date_of_birth": "...", "aadhaar_number": "...", "phone_number": "...", "address": "...", "created_at": "...", "updated_at": "..."}` | Fetches the profile associated with the authenticated user ID. |
+| `/api/restricted/profile` | `POST` | ✅ Yes | `{"full_name": "...", "date_of_birth": "...", "aadhaar_number": "...", "phone_number": "...", "address": "..."}` | `{"message": "profile created successfully"}` | Initializes a new profile record for the authenticated user. |
+| `/api/restricted/profile` | `PUT` | ✅ Yes | `{"full_name": "...", "date_of_birth": "...", "aadhaar_number": "...", "phone_number": "...", "address": "..."}` | `{"message": "profile updated successfully"}` | Updates existing profile details. Validates via JWT `sub` claim. |
+| `/api/health` | `GET` | ❌ No | None | `{"status": "..."}` | Returns API health status as JSON. Possible values: `"healthy"`, `"degraded"`, `"critical"`, `"down"`, `"unknown"`. |
+
 
 ---
 ### Database Diagram
