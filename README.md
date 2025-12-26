@@ -136,9 +136,9 @@ Ensure you have the following installed before proceeding:
    - Create your local environment file and update the database connection string.
 
     ```bash
-    cd backend/
-    cp ../.env.example .env
-    # Open .env and edit your DB_URL
+       cd backend/
+      cp ../.env.example .env
+      # Open .env and edit your DB_URL
     ```
 3. Database Migrations
    ```bash
@@ -154,7 +154,7 @@ Ensure you have the following installed before proceeding:
     go mod download
     ```
     ```bash
-    go run .//server/cmd/web
+    go run ./server/cmd/web
     ```
 6. Frontend Setup
    ```bash
