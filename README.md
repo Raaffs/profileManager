@@ -144,7 +144,7 @@ Ensure you have the following installed before proceeding:
      go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
    ```
     ```bash
-    migrate -path server/migrations/ -database "your_db_url" up
+    migrate -path backend/server/migrations/ -database "your_db_url" up
     ```
 4. Backend Setup
    Install Go modules and start the server.
@@ -152,7 +152,7 @@ Ensure you have the following installed before proceeding:
     go mod download
     ```
     ```bash
-    go run ./server/cmd/web
+    go run ./backend/server/cmd/web
     ```
 5. Frontend Setup
    ```bash
