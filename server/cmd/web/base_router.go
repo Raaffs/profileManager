@@ -71,7 +71,7 @@ func (app *Application) LoadMiddleware(e *echo.Echo) {
 }
 
 func (app *Application) RegisterRoutes(e *echo.Echo) {
-    // Public routes
+    e.GET("/api/health", app.health.Handler)
     e.POST("/api/login", app.Login)
     e.POST("/api/register", app.Register)
 

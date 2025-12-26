@@ -23,6 +23,7 @@ type Application struct {
 	env    map[string]string
 	repo   *repository.Repository
 	logger echo.Logger
+	health *HealthChecker
 }
 
 func connectWithRetry(ctx context.Context, dbURL string) (*pgxpool.Pool, error) {
@@ -82,6 +83,7 @@ func main() {
 		env:    loadEnv(),
 		repo:   store.NewPostgresRepo(conn),
 		logger: srv.Logger,
+		health: &HealthChecker{status: StatusHealthy},
 	}
 
 	app.RegisterRoutes(srv)

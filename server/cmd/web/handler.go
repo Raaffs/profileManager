@@ -148,7 +148,8 @@ func (app *Application) GetProfile(c echo.Context) error {
 	}
 
 	if err := DecryptFields(app.env[env.AES_KEY], &profile.AadhaarNumber);err != nil {
-		app.logger.Errorf("error decrypting fields \n%w", err)
+		app.logger.Errorf("CRITICAL ERROR: cipher failure: \n%w", err)
+		// app.healthCheck().SetStatus(false)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
 	return c.JSON(http.StatusOK, profile)
@@ -192,3 +193,4 @@ func (app *Application) UpdateProfile(c echo.Context) error {
 	}
 	return nil
 }
+

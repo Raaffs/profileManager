@@ -41,8 +41,8 @@ func (v *Validator)Aadhar(aadhar string){
 	regex := regexp.MustCompile(`^[2-9]{1}[0-9]{11}$`)
 	v.Check(
 	 	regex.MatchString(aadhar) && len(aadhar) == AADHAR_LENGTH,
-		ErrInvalidPhone.Key,
-		ErrInvalidPhone.Message,
+		ErrInvalidAadharNumber.Key,
+		ErrInvalidAadharNumber.Message,
 	)
 }
 
