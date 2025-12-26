@@ -91,8 +91,8 @@ func main() {
 	srv.Logger=app.logger
 	
 	go func() {
-		log.Println(" Server starting on :8080")
-		if err := srv.Start(":8080"); err != nil && err != http.ErrServerClosed {
+		log.Println(" Server starting on ", app.env[env.API_PORT])
+		if err := srv.Start(fmt.Sprintf(":%s",app.env[env.API_PORT])); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Forcefully shutting down the server: %v", err)
 		}
 	}()

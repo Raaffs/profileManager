@@ -24,6 +24,22 @@ const(
 	StatusDown 
 )
 
+func (s HealthStatus) String() string {
+	switch s {
+	case StatusHealthy:
+		return "healthy"
+	case StatusDegraded:
+		return "degraded"
+	case StatusCritical:
+		return "critical"
+	case StatusDown:
+		return "down"
+	default:
+		return "unknown"
+	}
+}
+
+
 type HealthChecker struct{
 	mu sync.RWMutex
 	status HealthStatus
@@ -42,21 +58,6 @@ func (h *HealthChecker)GetStatus()HealthStatus{
 	h.mu.RLock()
 	defer h.mu.RUnlock()
 	return h.status
-}
-
-func (s HealthStatus) String() string {
-	switch s {
-	case StatusHealthy:
-		return "healthy"
-	case StatusDegraded:
-		return "degraded"
-	case StatusCritical:
-		return "critical"
-	case StatusDown:
-		return "down"
-	default:
-		return "unknown"
-	}
 }
 
 // ResetStatus forces the status back to Healthy, bypassing the escalation check.
