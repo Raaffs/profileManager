@@ -136,7 +136,7 @@ func (app *Application) CreateProfile(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
 
-	return nil
+	return c.JSON(http.StatusOK,map[string]string{"message":"profile created successfully"})
 }
 
 func (app *Application) GetProfile(c echo.Context) error {
@@ -201,6 +201,8 @@ func (app *Application) UpdateProfile(c echo.Context) error {
 		app.logger.Errorf("error updating profile \n%w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]HttpResponseMsg{"error": ErrInternalServer})
 	}
-	return nil
+	return c.JSON(http.StatusOK,map[string]string{
+		"message":"profile updated successfully",
+	})
 }
 
