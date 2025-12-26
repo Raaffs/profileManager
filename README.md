@@ -149,12 +149,13 @@ Ensure you have the following installed before proceeding:
 4. Backend Setup
    Install Go modules and start the server.
     ```bash
+    cd backend
     go mod download
     ```
     ```bash
     go run ./backend/server/cmd/web
     ```
-5. Frontend Setup
+6. Frontend Setup
    ```bash
     cd client
     npm install
